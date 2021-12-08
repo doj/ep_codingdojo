@@ -1,4 +1,4 @@
-- only build if updates have not arrived for >3 sec
+- only replacing the entire text works, replacing the back part of the text fails.
 
 - for package.json
 "peerDependencies": {
