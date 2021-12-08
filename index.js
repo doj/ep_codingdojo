@@ -1,7 +1,9 @@
 exports.padUpdate = function (hookName, context, cb) {
     //console.log(context);
 
-    var text = context.pad.atext.text;
+    var pad = context.pad
+
+    var text = pad.atext.text;
     console.log(text);
 
     var rgx = /^(.+?)(={5,}[^\n]+?={5,})/s;
@@ -47,6 +49,8 @@ exports.padUpdate = function (hookName, context, cb) {
     const cp = require('child_process');
     var buf = cp.execSync(cmd, {"timeout":60*1000});
     console.log(buf.toString());
+
+    pad.setText(matches[1] + matches[2] + '\n' + buf.toString());
     // TODO: update pad with buf
 
     return true;
