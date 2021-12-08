@@ -1,5 +1,4 @@
 # Etherpad Coding Dojo
-![Publish Status](https://github.com/ether/ep_codingdojo/workflows/Node.js%20Package/badge.svg)
 ![Screenshot](https://user-images.githubusercontent.com/220864/107214131-5c3dd600-6a01-11eb-82d9-b2d67ec8ae93.png)
 ## What is this?
 An Etherpad Plugin to run a command on the server using the pad's text as an input (file).
@@ -17,3 +16,15 @@ https://github.com/ether/etherpad-lite
 https://github.com/ether/etherpad-lite/wiki/Creating-a-plugin
 https://nodejs.dev/learn
 https://nodejs.org/dist/latest-v17.x/docs/api/documentation.html
+
+## C++ example
+
+```c++
+#include <cstdio>
+int main() {
+    printf("dirk\n");
+    return 0;
+}
+
+==========g++ -Wall @.cpp@ && ./a.out======
+```
