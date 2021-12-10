@@ -62,12 +62,15 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
     apt-get -qq --no-install-recommends install \
         ca-certificates \
         git npm \
-        curl perl python lua5.3 make build-essential g++ boost \
+        curl perl python lua5.3 make build-essential g++ libboost-all-dev \
         ${INSTALL_ABIWORD:+abiword} \
         ${INSTALL_SOFFICE:+libreoffice} \
         && \
     apt-get -qq clean && \
     rm -rf /var/lib/apt/lists/*
+
+# update npm
+RUN npm install -g npm@8.3.0
 
 USER etherpad
 

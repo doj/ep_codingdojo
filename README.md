@@ -27,13 +27,42 @@ https://nodejs.org/dist/latest-v17.x/docs/api/documentation.html
 ## Development Install
 
 This etherpad plugin currently needs a patch of the upstream etherpad GIT repository.
+It is also using some hard coded paths to a Node.js install on the /opt/ directory.
 
-- install this plugin source code, for example with: $ git clone https://github.com/doj/ep_codingdojo.git
-- install the patched etherpad-lite source code: $ git clone https://github.com/doj/etherpad-lite.git
-- $ cd etherpad-lite
-- $ git checkout pad-splicetext
-- $ npm install /path/to/ep_codingdojo
-- $ src/bin/run.sh
+```sh
+mkdir /opt/
+cd /opt/
+git clone https://github.com/doj/ep_codingdojo.git
+git clone https://github.com/doj/etherpad-lite.git
+cd etherpad-lite
+git checkout pad-splicetext
+cd ../ep_codingdojo
+make run
+```
+
+## Docker container
+
+The following instructions build a docker container:
+
+```sh
+git clone https://github.com/doj/etherpad-lite.git
+cd etherpad-lite
+git checkout pad-splicetext
+wget https://github.com/doj/ep_codingdojo/raw/main/Dockerfile
+# you may need to edit src/package-lock.json and change "lockfileVersion" to 2
+docker build --build-arg DEFAULT_PAD_TEXT='int main() {\n printf("Hello World\\n");\n return 0;\n}\n=====c++ -Wall @a.cpp@ && ./a.out=====' --tag $USER/etherpad .
+```
+
+For more instructions how to build a docker container for Etherpad see
+https://github.com/ether/etherpad-lite/blob/develop/doc/docker.md
+
+To run the docker container:
+
+```sh
+docker run --publish 9001:9001 $USER/etherpad
+```
+
+And use the following URL http://localhost:9001
 
 ## Examples
 
@@ -45,7 +74,7 @@ int main() {
     return 0;
 }
 
-=====g++ -Wall @a.cpp@ && ./a.out=====
+=====c++ -Wall @a.cpp@ && ./a.out=====
 ```
 
 ### perl
@@ -85,9 +114,10 @@ public class Main {
 
 ### Makefile
 
-Etherpad doesn't allow tab characters in pads. Etherpad typically replaces
-tab characters with spaces. Makefiles however require commands to start
-with a tab character. This example compile command works around this by
+The default Etherpad configuration doesn't allow tab characters in pads.
+Etherpad typically replaces tab characters with spaces.
+Makefiles however require commands to start with a tab character.
+This example compile command works around this by
 replaceing 2 or more space characters at the start of the line with a single tab
 character. This allows to edit a Makefile in Etherpad and have it compile.
 
