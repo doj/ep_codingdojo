@@ -1,54 +1,48 @@
 {
-    "name": "ep_codingdojo",
-    "version": "0.0.1",
-    "description": "run etherpad text with a unix command on the server",
-    "author": {
-	"name": "Dirk Jagdmann",
-	"email":  "doj@cubic.org"
-    },
-    "contributors": [
-    ],
-    "keywords": [
-	"etherpad",
-	"plugin",
-	"ep"
-    ],
-    "license": "Apache2",
-    "repository": {
-	"type": "git",
-	"url": "https://github.com/doj/ep_codingdojo.git"
-    },
-    "bugs": {
-	"url": "https://github.com/doj/ep_codingdojo/issues"
-    },
-    "homepage": {
-	"url": "https://github.com/doj/ep_codingdojo/README.md"
-    },
-    "funding": {
-	"type": "individual",
-	"url": "https://paypal.me/dojcubic"
-    },
-    "dependencies": {
-    },
-    "devDependencies": {
-	"eslint": "^7.18.0",
-	"eslint-config-etherpad": "^1.0.24",
-	"eslint-plugin-eslint-comments": "^3.2.0",
-	"eslint-plugin-mocha": "^8.0.0",
-	"eslint-plugin-node": "^11.1.0",
-	"eslint-plugin-prefer-arrow": "^1.2.3",
-	"eslint-plugin-promise": "^4.2.1",
-	"eslint-plugin-you-dont-need-lodash-underscore": "^6.10.0"
-    },
-    "eslintConfig": {
-	"root": true,
-	"extends": "etherpad/plugin"
-    },
-    "scripts": {
-	"lint": "eslint .",
-	"lint:fix": "eslint --fix ."
-    },
-    "engines": {
-	"node": ">= 10.13.0"
-    }
+  "name": "ep_codingdojo",
+  "version": "0.0.1",
+  "description": "run etherpad text with a unix command on the server",
+  "author": {
+    "name": "Dirk Jagdmann",
+    "email":  "doj@cubic.org"
+  },
+  "contributors": [
+  ],
+  "keywords": [
+    "etherpad",
+    "plugin",
+    "ep"
+  ],
+  "license": "Apache2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/doj/ep_codingdojo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/doj/ep_codingdojo/issues"
+  },
+  "homepage": {
+    "url": "https://github.com/doj/ep_codingdojo/README.md"
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://paypal.me/dojcubic"
+  },
+  "dependencies": {
+    "ep_etherpad-lite":">=1.8.6"
+  },
+  "peerDependencies": {
+    "ep_etherpad-lite":">=1.8.6"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": "etherpad/plugin"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix ."
+  },
+  "engines": {
+    "node": ">= 10.13.0"
+  }
 }
