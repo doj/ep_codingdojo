@@ -1,5 +1,5 @@
 # Etherpad Coding Dojo
-![Screenshot](https://user-images.githubusercontent.com/220864/107214131-5c3dd600-6a01-11eb-82d9-b2d67ec8ae93.png)
+![Screenshot](https://github.com/doj/ep_codingdojo/raw/main/static/image/ep_codingdojo.png)
 ## What is this?
 
 An Etherpad Plugin to run a command on the server using the pad's text as an input (file).
