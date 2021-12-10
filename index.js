@@ -1,14 +1,23 @@
+// import some other JavaScript code
 const Changeset = require('../etherpad-lite/src/static/js/Changeset');
 const padMessageHandler = require('../etherpad-lite/src/node/handler/PadMessageHandler.js');
 const fs = require('fs')
 const cp = require('child_process');
 const os = require('os');
 const path = require('path')
+
 /// operating system temporary directory.
 const tmpDir = os.tmpdir();
 
+/// file system path separator character
+var fs_sep = path.sep;
+
+/// dictionary of pad timers.
+/// key: Pad ID string.
+/// val: timer object.
 var update_registry = {}
 
+/// callback function for the Etherpad "padUpdate" hook.
 exports.padUpdate = function (hookName, context, cb) {
   //console.log(context);
 
@@ -87,7 +96,6 @@ exports.padUpdate = function (hookName, context, cb) {
     var filename = matches_extension[1];
 
     // create temporary directory
-    var fs_sep = path.sep;
     fs.mkdtemp(`${tmpDir}${fs_sep}ep_codingdojo-`, (err,dirname) => {
       if (err)
       {
@@ -107,14 +115,16 @@ exports.padUpdate = function (hookName, context, cb) {
 	return;
       }
 
-      // compile
-      cmd = '(cd ' + dirname
-	+ ' ; ' + cmd.replace(rgx_filename, filename)
-	+ ' ; cd ' + tmpDir
-	+ ' ; rm -rf ' + dirname
-	+ ') 2>&1 || true';
+      // construct the compile command
+      cmd = '(cd ' + dirname // change into the temporary directory
+	+ ' ; ' + cmd.replace(rgx_filename, filename) // the compile command from the Etherpad
+	//+ ' ; mv -f * /tmp/' // only enable this line for debugging!
+	+ ' ; cd ' + tmpDir // change into the base temporary directory
+	+ ' ; rm -rf ' + dirname // remove our work temporary directory
+	+ ') 2>&1 ' // redirect STDERR to STDOUT
+	+ '|| true'; // force a success exit status code, to make Node.js execSync() happy
       //console.log('exec: ' + cmd);
-      // run command, capture STDOUT and STDERR, convert \r\n -> \n
+      // execute the command, capture STDOUT, convert \r\n to \n
       update_result(cp.execSync(cmd, {"timeout":60*1000}).toString().replace(/\r\n/g, '\n'));
     });
   },
