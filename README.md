@@ -64,6 +64,12 @@ docker run --publish 9001:9001 $USER/etherpad
 
 And use the following URL http://localhost:9001
 
+To clean up the docker container and image:
+
+```sh
+docker container prune ; docker image rm $USER/etherpad
+```
+
 ## Examples
 
 ### C++

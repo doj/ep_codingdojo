@@ -1,6 +1,6 @@
 // import some other JavaScript code
 const Changeset = require('ep_etherpad-lite/src/static/js/Changeset');
-const padMessageHandler = require('ep_etherpad-lite/src/node/handler/PadMessageHandler.js');
+const padMessageHandler = require('ep_etherpad-lite/src/node/handler/PadMessageHandler');
 const fs = require('fs')
 const cp = require('child_process');
 const os = require('os');

@@ -1,3 +1,6 @@
+ETHERPAD_DIR ?= $(shell readlink -f ../etherpad-lite || echo "$(PWD)/../etherpad-lite")
+PLUGIN_DIR := $(PWD)
+
 all:	fastrun
 
 clean:
@@ -5,9 +8,8 @@ clean:
 
 distclean:	clean
 	$(RM) -r node_modules package-lock.json *.ts
+	$(RM) -r $(ETHERPAD_DIR)/node_modules/*
 
-ETHERPAD_DIR?=$(shell readlink -f ../etherpad-lite)
-PLUGIN_DIR=$(PWD)
 setup.ts:
 	@[ -d $(PLUGIN_DIR) ]   || ( echo "did not find $(PLUGIN_DIR)" ; false )
 	@[ -d $(ETHERPAD_DIR) ] || ( echo "did not find $(ETHERPAD_DIR)" ; false )
