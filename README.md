@@ -88,13 +88,18 @@ public class Main {
 Etherpad doesn't allow tab characters in pads. Etherpad typically replaces
 tab characters with spaces. Makefiles however require commands to start
 with a tab character. This example compile command works around this by
-replace 1-8 space characters at the start of the line with a single tab
+replaceing 2 or more space characters at the start of the line with a single tab
 character. This allows to edit a Makefile in Etherpad and have it compile.
 
 ```
-all:
- @echo 'Hello World'
-=====perl -i -pe 's/^\s{1,8}/\t/' a.mak ; make -f @a.mak@=====
+all: Hello World
+
+Hello:
+    @echo -n 'Hello '
+
+World:
+    @echo 'World'
+=====perl -i -pe 's/^\s{2,}/\t/' a.mak ; make -f @a.mak@=====
 ```
 
 ### Lua
