@@ -46,7 +46,7 @@ int main() {
     return 0;
 }
 
-=====g++ -Wall @.cpp@ && ./a.out=====
+=====g++ -Wall @a.cpp@ && ./a.out=====
 ```
 
 ### perl
@@ -54,7 +54,7 @@ int main() {
 use strict;
 print "Hello World\n";
 
-=====perl @.pl@=====
+=====perl @a.pl@=====
 Hello World
 ```
 
@@ -62,32 +62,26 @@ Hello World
 ```python
 print "Hello World\n";
 
-=====python @.py@=====
+=====python @a.py@=====
 ```
 
 ### bourne shell
 ```sh
 echo "Hello World"
 
-=====bash @.sh@=====
+=====bash @a.sh@=====
 ```
 
 ### Java
 
-The Java programming language is somewhat restricted to use in the Etherpad coding dojo.
-Because every Java class needs to be located in a file with the class' name as the file name,
-currently only a single Java class named "ep_codingdojo" is supported.
-This can be enhanced with a future version of the Etherpad coding dojo plugin,
-which allows to write multiple files with custom file names for compilation.
-
 ```java
-public class ep_codingdojo {
+public class Main {
   public static void main(String[] args) {
     System.out.println("Hello, World");
   }
 }
 
-=====javac @.java@ && java ep_codingdojo=====
+=====javac @Main.java@ && java Main=====
 ```
 
 ### Makefile
@@ -99,7 +93,7 @@ is used and the pad's text contains as asterisk character.
 
 You would use a compiler command line like
 ```
-=====make -f @.mak@=====
+=====make -f @a.mak@=====
 ```
 
 ### Lua
@@ -107,5 +101,5 @@ You would use a compiler command line like
 ```lua
 print 'Hello World\n';
 
-=====lua @.lua@=====
+=====lua @a.lua@=====
 ```
