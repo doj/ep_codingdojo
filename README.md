@@ -22,7 +22,6 @@ payment to the author's PayPal account: https://paypal.me/dojcubic
 https://github.com/doj/ep_codingdojo
 https://github.com/ether/etherpad-lite
 https://github.com/ether/etherpad-lite/wiki/Creating-a-plugin
-https://nodejs.dev/learn
 https://nodejs.org/dist/latest-v17.x/docs/api/documentation.html
 
 ## Development Install
@@ -60,7 +59,7 @@ Hello World
 
 ### python
 ```python
-print "Hello World\n";
+print "Hello World";
 
 =====python @a.py@=====
 ```
@@ -86,14 +85,16 @@ public class Main {
 
 ### Makefile
 
-Currently Makefiles can't be writted in Etherpad, because the editor does
-not like tab characters. When importing text, a tab character is typically
-replaced with 4 space characters. When pressing the tab key, a special function
-is used and the pad's text contains as asterisk character.
+Etherpad doesn't allow tab characters in pads. Etherpad typically replaces
+tab characters with spaces. Makefiles however require commands to start
+with a tab character. This example compile command works around this by
+replace 1-8 space characters at the start of the line with a single tab
+character. This allows to edit a Makefile in Etherpad and have it compile.
 
-You would use a compiler command line like
 ```
-=====make -f @a.mak@=====
+all:
+ @echo 'Hello World'
+=====perl -i -pe 's/^\s{1,8}/\t/' a.mak ; make -f @a.mak@=====
 ```
 
 ### Lua
@@ -103,3 +104,17 @@ print 'Hello World\n';
 
 =====lua @a.lua@=====
 ```
+
+## Compiler command line
+
+The ep_codingdojo plugin will search in the pad's text for a line starting
+with 5 or more equal characters and ending with 5 or more equal characters.
+If the plugin finds such a line, it will attempt to parse it as a compile
+command. If the parsing is successful, the compile command will be used to
+compile the pad's text preceeding the compile line and the compile's output
+will be appended to the pad after the compile line.
+
+The compile line can have any (unix) command line, which is executed with the
+system's native shell. The plugin will look for a special filename placeholder.
+The filename must be enclosed in ampersand characters. The plugin will write
+the source code (pad text above the compiler line) to the specified file name.
