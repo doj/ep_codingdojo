@@ -1,2 +1,3 @@
+- docker creation doesn't work when ep_codingdojo is listed as a plugin
 - configure Etherpad to allow tab characters (for Makefiles)
 - write multiple files

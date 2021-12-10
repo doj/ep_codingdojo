@@ -50,7 +50,7 @@ cd etherpad-lite
 git checkout pad-splicetext
 wget https://github.com/doj/ep_codingdojo/raw/main/Dockerfile
 # you may need to edit src/package-lock.json and change "lockfileVersion" to 2
-docker build --build-arg DEFAULT_PAD_TEXT='int main() {\n printf("Hello World\\n");\n return 0;\n}\n=====c++ -Wall @a.cpp@ && ./a.out=====' --tag $USER/etherpad .
+docker build --tag $USER/etherpad .
 ```
 
 For more instructions how to build a docker container for Etherpad see
@@ -59,7 +59,7 @@ https://github.com/ether/etherpad-lite/blob/develop/doc/docker.md
 To run the docker container:
 
 ```sh
-docker run --publish 9001:9001 $USER/etherpad
+docker run --publish 9001:9001 -e DEFAULT_PAD_TEXT='int main() {\n printf("Hello World\\n");\n return 0;\n}\n=====c++ -Wall @a.cpp@ && ./a.out=====' $USER/etherpad
 ```
 
 And use the following URL http://localhost:9001
