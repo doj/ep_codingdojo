@@ -1,4 +1,6 @@
-- only replacing the entire text works, replacing the back part of the text fails.
+- configure Etherpad to allow tab characters (for Makefiles)
+- write multiple files
+- compile in a temporary directory
 
 - for package.json
 "peerDependencies": {
@@ -6,6 +8,3 @@
 	"etherpad-lite":">=1.8.6"
 	"ep_etherpad-lite":">=1.8.6"
     },
-
-
-
