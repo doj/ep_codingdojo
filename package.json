@@ -22,25 +22,11 @@
     "url": "https://github.com/doj/ep_codingdojo/issues"
   },
   "homepage": {
-    "url": "https://github.com/doj/ep_codingdojo/README.md"
+    "url": "https://github.com/doj/ep_codingdojo"
   },
   "funding": {
     "type": "individual",
     "url": "https://paypal.me/dojcubic"
-  },
-  "dependencies": {
-    "ep_etherpad-lite":">=1.8.6"
-  },
-  "peerDependencies": {
-    "ep_etherpad-lite":">=1.8.6"
-  },
-  "eslintConfig": {
-    "root": true,
-    "extends": "etherpad/plugin"
-  },
-  "scripts": {
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
   },
   "engines": {
     "node": ">= 10.13.0"
