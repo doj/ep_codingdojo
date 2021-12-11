@@ -2,16 +2,15 @@
 #
 # Author: Dirk Jagdmann <doj@cubic.org>
 
-FROM node:lts-slim
+# https://hub.docker.com/_/node
+FROM node:bullseye
 LABEL maintainer="Dirk Jagdmann"
 
 # plugins to install while building the container. By default no plugins are
 # installed.
 # If given a value, it has to be a space-separated, quoted list of plugin names.
 #
-# EXAMPLE:
-#   ETHERPAD_PLUGINS="ep_codepad ep_author_neat"
-ARG ETHERPAD_PLUGINS="github:doj/ep_codingdojo"
+ARG ETHERPAD_PLUGINS="github:doj/ep_codingdojo ep_author_neat2 ep_special_characters ep_cursortrace"
 
 # Control whether abiword will be installed, enabling exports to DOC/PDF/ODT formats.
 # By default, it is not installed.
@@ -61,8 +60,13 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
     apt-get -qq dist-upgrade && \
     apt-get -qq --no-install-recommends install \
         ca-certificates \
-        git npm \
-        curl perl python lua5.3 make build-essential g++ libboost-all-dev \
+        git npm curl \
+        perl python lua5.3 ruby \
+	r-base r-recommended groovy \
+	guile-3.0 swi-prolog fpc golang rustc \
+	clojure algol68g gfortran mono-csharp-shell gnat gdc \
+	make nasm build-essential g++ libboost-all-dev \
+	xsltproc sqlite3 octave \
         ${INSTALL_ABIWORD:+abiword} \
         ${INSTALL_SOFFICE:+libreoffice} \
         && \
@@ -90,6 +94,8 @@ RUN { [ -z "${ETHERPAD_PLUGINS}" ] || \
 
 # Copy the configuration file.
 COPY --chown=etherpad:etherpad ./settings.json.docker "${EP_DIR}"/settings.json
+# fiddle with the default configuration
+RUN perl -i -pe 's/"defaultPadText"\s*:.+/"defaultPadText":"\#include <cstdio>\\nint main() {\\n printf(\\"Hello World\\\\n\\");\\n return 0;\\n}\\n=====c++ -std=c++20 -Wall \@a.cpp\@ && .\/a.out=====",/;   s/"suppressErrorsInPadText"\s*:.+/"suppressErrorsInPadText":true,/' "${EP_DIR}"/settings.json
 
 # Fix group permissions
 RUN chmod -R g=u .

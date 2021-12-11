@@ -3,11 +3,13 @@
 ## What is this?
 
 An Etherpad Plugin to run a command on the server using the pad's text as an input (file).
+
 Warning: This plugin does execute the (compiler) command unchecked, and without
 any kind of protection. You can corrupt your system easily. Do not enable this
 plugin on an Etherpad for users which can't be trusted. It is highly recommended
 to protect the web server with features like a virtual machine, container, jail
-when running this plugin.
+when running this plugin. See the section 'Docker container' below how to build
+a docker container with this software.
 
 ## History
 2021-12-08 start development
@@ -27,7 +29,6 @@ https://nodejs.org/dist/latest-v17.x/docs/api/documentation.html
 ## Development Install
 
 This etherpad plugin currently needs a patch of the upstream etherpad GIT repository.
-It is also using some hard coded paths to a Node.js install on the /opt/ directory.
 
 ```sh
 mkdir /opt/
@@ -59,7 +60,7 @@ https://github.com/ether/etherpad-lite/blob/develop/doc/docker.md
 To run the docker container:
 
 ```sh
-docker run --publish 9001:9001 -e DEFAULT_PAD_TEXT='int main() {\n printf("Hello World\\n");\n return 0;\n}\n=====c++ -Wall @a.cpp@ && ./a.out=====' $USER/etherpad
+docker run --publish 9001:9001 -e ADMIN_PASSWORD=admin $USER/etherpad
 ```
 
 And use the following URL http://localhost:9001
@@ -67,43 +68,131 @@ And use the following URL http://localhost:9001
 To clean up the docker container and image:
 
 ```sh
-docker container prune ; docker image rm $USER/etherpad
+docker container prune -f
+docker image rm $USER/etherpad
+docker image prune -f
 ```
 
 ## Examples
+
+This section lists examples how to use many programming languages with the
+plugin. These examples are all working with the docker image of the previous
+section.
+
+### Ada
+
+```ada
+with Text_IO; use Text_IO;
+procedure hello is
+begin
+   Put_Line("Hello Ada");
+end hello;
+
+=====gnatmake @hello.adb@ && ./hello=====
+```
+
+### Algol 68
+
+```algol
+printf(($gl$, "Hello Algol"))
+
+=====a68g @a.alg@=====
+```
+
+### Assembly x86-64
+
+```asm
+global _start
+section .text
+_start:
+  mov rax, 1
+  mov rdi, 1
+  mov rsi, msg
+  mov rdx, msglen
+  syscall
+  mov rax, 60
+  mov rdi, 0
+  syscall
+section .rodata
+  msg: db "Hello x86", 10
+  msglen: equ $ - msg
+=====nasm -f elf64 -o a.o @a.s@ && ld -o a.out a.o && ./a.out=====
+```
+
+### Bourne shell
+```sh
+echo "Hello Bourne Shell"
+
+=====bash @a.sh@=====
+```
 
 ### C++
 ```c++
 #include <cstdio>
 int main() {
-    printf("Hello World\n");
+    printf("Hello C++\n");
     return 0;
 }
 
-=====c++ -Wall @a.cpp@ && ./a.out=====
+=====c++ -Wall -std=c++20 @a.cpp@ && ./a.out=====
 ```
 
-### perl
-```perl
-use strict;
-print "Hello World\n";
+### C#
 
-=====perl @a.pl@=====
-Hello World
+```C#
+Console.WriteLine("Hello C#");
+
+=====csharp @a.cs@=====
 ```
 
-### python
-```python
-print "Hello World";
+### D
 
-=====python @a.py@=====
+```d
+import std.stdio;
+void main()
+{
+  writeln("Hello D");
+}
+
+=====gdc @a.d@ && ./a.out=====
 ```
 
-### bourne shell
-```sh
-echo "Hello World"
+### Fortran
 
-=====bash @a.sh@=====
+```fortran
+program hello
+  print *, 'Hello Fortran'
+end program hello
+=====gfortran @a.f90@ && ./a.out=====
+```
+
+### Go
+
+```go
+package main
+import "fmt"
+func main() {
+  fmt.Println("Hello Go")
+}
+
+=====go run @a.go@=====
+```
+
+### Groovy
+
+```groovy
+println "Hello Groovy"
+
+=====groovy @a.groovy@=====
+```
+
+### Lisp, Scheme, Guile
+
+```lisp
+(display "Hello Lisp")
+(newline)
+
+=====guile @a.scm@ 2>/dev/null=====
 ```
 
 ### Java
@@ -111,11 +200,27 @@ echo "Hello World"
 ```java
 public class Main {
   public static void main(String[] args) {
-    System.out.println("Hello, World");
+    System.out.println("Hello Java");
   }
 }
 
 =====javac @Main.java@ && java Main=====
+```
+
+### JavaScript
+
+```javascript
+console.log('Hello JavaScript')
+
+=====node @a.js@=====
+```
+
+### Lua
+
+```lua
+print 'Hello Lua\n';
+
+=====lua @a.lua@=====
 ```
 
 ### Makefile
@@ -126,6 +231,11 @@ Makefiles however require commands to start with a tab character.
 This example compile command works around this by
 replaceing 2 or more space characters at the start of the line with a single tab
 character. This allows to edit a Makefile in Etherpad and have it compile.
+
+Alternatively you can install the ep_special_characters plugin, which allows
+to insert any unicode character into the pad. However the first 32 control
+characters are shown with a blank square. To insert the tab character, select
+the 9th square.
 
 ```
 all: Hello World
@@ -138,13 +248,96 @@ World:
 =====perl -i -pe 's/^\s{2,}/\t/' a.mak ; make -f @a.mak@=====
 ```
 
-### Lua
+### Matlab, GNU Octave
 
-```lua
-print 'Hello World\n';
+```matlab
+disp('Hello Matlab')
 
-=====lua @a.lua@=====
+=====octave @a.m@=====
 ```
+
+### Pascal
+
+```pascal
+program Hello;
+begin
+  writeln('Hello Pascal');
+end.
+
+=====fpc @a.pas@ && ./a=====
+```
+
+### Perl
+```perl
+use strict;
+print "Hello Perl\n";
+
+=====perl @a.pl@=====
+Hello World
+```
+
+### Prolog
+
+```prolog
+:- initialization hello_world, halt.
+hello_world :-
+    write('Hello Prolog'), nl.
+
+=====swipl -q -l @a.pl@=====
+```
+
+### Python
+```python
+print "Hello Python";
+
+=====python @a.py@=====
+```
+
+### R
+
+```r
+print("Hello R")
+
+=====Rscript @a.r@=====
+```
+
+### Ruby
+
+```ruby
+puts "Hello Ruby"
+
+=====ruby @a.rb@=====
+```
+
+### Rust
+
+```rust
+fn main() {
+  println!("Hello Rust");
+}
+
+=====rustc @a.rs@ && ./a=====
+```
+
+### SQL
+
+```sql
+create table t(a varchar(20));
+insert into t(a) values('Hello'),('SQL');
+select * from t;
+=====sqlite3 a.db < @a.sql@=====
+```
+
+### TODO
+
+Maybe support for the following languages can be added to the docker image:
+* Kotlin
+* Erlang
+* Falcon
+* Smalltalk
+* Basic
+* XSLT
+* Scala
 
 ## Compiler command line
 
