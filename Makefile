@@ -28,9 +28,9 @@ setup.ts:
 	touch $@
 
 run debugRun cleanRun:	setup.ts
-	cd $(ETHERPAD_ABSDIR) && src/bin/$@.sh
-	touch run.ts
+	@touch run.ts
+	@cd $(ETHERPAD_ABSDIR) && src/bin/$@.sh
 
 fastRun:
-	[ -f run.ts ]
-	cd $(ETHERPAD_ABSDIR) && src/bin/$@.sh
+	@[ -f run.ts ] || ( echo 'do "make run" first to setup Etherpad' ; false )
+	@cd $(ETHERPAD_ABSDIR) && src/bin/$@.sh

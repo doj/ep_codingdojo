@@ -32,23 +32,91 @@ exports.padUpdate = function (hookName, context, cb) {
   // add a new timer for this pad with a timeout of
   // 3 seconds.
   update_registry[pad.id] = setTimeout(() => {
-    var text = pad.atext.text;
-    //console.log(text);
+    // create temporary directory
+    fs.mkdtemp(`${tmpDir}${fs_sep}ep_codingdojo-`, (err,dirname) => {
+      if (err)
+      {
+	console.log('mkdtemp error: ' + err);
+	return;
+      }
 
-    // find the compiler line on the pad text
-    var rgx = /^(.+?)(={5,}[^\n]+?={5,})(.+)?$/s;
-    var matches = rgx.exec(text);
-    if (matches === null)
-    {
-      console.log('did not find compiler line');
-      return 1;
-    }
-    var sourcecode = matches[1];
-    var compiler_line = matches[2];
-    var old_res = matches[3];
+      //console.log('using temporary directory ' + dirname);
 
-    // function to update the result, which is the text after the compiler line.
-    var update_result = function(new_res) {
+      var text = pad.atext.text;
+      //console.log(text);
+
+      // regular expression to match a compile line
+      var rgx_command_line = /^={5,}(.+?)={5,}/;
+      // regular expression to match a file name
+      var rgx_filename = /@([\.\w_-]+)@/;
+
+      // current character index in the pad text string.
+      var idx = 0;
+      // character index after the last compile command.
+      var startIdx = 0;
+
+      // new result string
+      var new_res = '';
+      // old result string, or source code string
+      var old_res = '';
+
+      // iterate all lines in the pad text
+      var lines = text.split(/\r?\n/);
+      for(var i = 0; i < lines.length; i++)
+      {
+	// get current line and update idx
+	var line = lines[i];
+	idx += line.length + 1;
+
+	// check if it is a compile line
+	var matches = rgx_command_line.exec(line);
+	if (matches === null)
+	{
+	  old_res = old_res + line + '\n';
+	  continue;
+	}
+
+	// save idx of the last compile line
+	startIdx = idx;
+
+	// get the filename from the compile line
+	var cmd = matches[1];
+	matches = rgx_filename.exec(cmd);
+	if (matches === null)
+	{
+	  new_res = new_res + 'could not find filename\n';
+	  continue;
+	}
+	var filename = matches[1];
+
+	// write the pad's section to the file
+	var abs_filename = dirname + fs_sep + filename;
+	try {
+	  fs.writeFileSync(abs_filename, old_res);
+	  //console.log('wrote ' + filename);
+	} catch (err) {
+	  new_res = new_res + 'could not write file ' + abs_filename + '\n' + err + '\n';
+	}
+	old_res = '';
+
+	// construct the compile command
+	cmd = '(cd ' + dirname // change into the temporary directory
+	  + ' ; ' + cmd.replace(rgx_filename, filename) // the compile command from the Etherpad
+	//+ ' ; mv -f * /tmp/' // only enable this line for debugging!
+	  + ') 2>&1 ' // redirect STDERR to STDOUT
+	  + '|| true'; // force a success exit status code, to make Node.js execSync() happy
+	//console.log('exec: ' + cmd);
+	// execute the command, capture STDOUT, convert \r\n to \n
+	new_res = new_res + cp.execSync(cmd, {"timeout":60*1000}).toString().replace(/\r\n/g, '\n');
+      } // for
+
+      // remove temporary directory
+      var cmd = 'cd ' + tmpDir // change into the base temporary directory
+	  + ' ; rm -rf ' + dirname // remove our work temporary directory
+      ;
+      cp.execSync(cmd, {"timeout":5*1000});
+
+      // compare new and old result
       var old_res_trimmed = old_res.trim();
       var new_res_trimmed = new_res.trim();
       //console.log('old_res: ' + old_res_trimmed);
@@ -58,77 +126,25 @@ exports.padUpdate = function (hookName, context, cb) {
 	return 2;
       }
 
-      // if the compiler line doesn't end in NL,
+      // if the last compiler line doesn't end in NL,
       // prefix a NL character to new_res.
-      if (compiler_line.charAt(compiler_line.length - 1) !== '\n')
+      if (startIdx == text.length)
       {
 	new_res = '\n' + new_res;
       }
 
-      var startIdx = sourcecode.length + compiler_line.length;
+      // update the result on the pad text
       var removeLen = text.length - startIdx - 1;
       //console.log('text  ' + text.length.toString());
       //console.log('start ' + startIdx.toString());
       //console.log('remov ' + removeLen.toString());
       //console.log('add   ' + new_res.length.toString());
-
       pad.spliceText(startIdx, removeLen, new_res);
       padMessageHandler.updatePadClients(pad);
       return 3;
-    };
-
-    // parse the compiler line to get the compiler command.
-    var rgx_cmd = /^={5,}(.+?)={5,}/;
-    var matches_cmd = rgx_cmd.exec(compiler_line);
-    if (matches_cmd === null)
-    {
-      return update_result('could not parse compiler line');
-    }
-    var cmd = matches_cmd[1];
-
-    // parse the file name extension
-    var rgx_filename = /@([\.\w_-]+)@/;
-    var matches_extension = rgx_filename.exec(cmd);
-    if (matches_extension === null)
-    {
-      return update_result('could not parse file name.\nIt should have a format like "@a.xxx@"');
-    }
-    var filename = matches_extension[1];
-
-    // create temporary directory
-    fs.mkdtemp(`${tmpDir}${fs_sep}ep_codingdojo-`, (err,dirname) => {
-      if (err)
-      {
-	update_result('mkdtemp error: ' + err);
-	return;
-      }
-
-      //console.log('using temporary directory ' + dirname);
-
-      // write the pad source code to a temporary filename
-      var abs_filename = dirname + fs_sep + filename;
-      try {
-	fs.writeFileSync(abs_filename, sourcecode);
-      } catch (err) {
-	err = 'could not write file ' + abs_filename + '\n' + err;
-	update_result(err);
-	return;
-      }
-
-      // construct the compile command
-      cmd = '(cd ' + dirname // change into the temporary directory
-	+ ' ; ' + cmd.replace(rgx_filename, filename) // the compile command from the Etherpad
-	//+ ' ; mv -f * /tmp/' // only enable this line for debugging!
-	+ ' ; cd ' + tmpDir // change into the base temporary directory
-	+ ' ; rm -rf ' + dirname // remove our work temporary directory
-	+ ') 2>&1 ' // redirect STDERR to STDOUT
-	+ '|| true'; // force a success exit status code, to make Node.js execSync() happy
-      //console.log('exec: ' + cmd);
-      // execute the command, capture STDOUT, convert \r\n to \n
-      update_result(cp.execSync(cmd, {"timeout":60*1000}).toString().replace(/\r\n/g, '\n'));
-    });
-  },
-  3*1000);
+    }); // fs.mkdtemp()
+  }, // setTimeout() callback
+  3*1000); // timeout interval, 3 seconds
 
   return true;
 }

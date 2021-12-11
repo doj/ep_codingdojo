@@ -328,6 +328,20 @@ select * from t;
 =====sqlite3 a.db < @a.sql@=====
 ```
 
+### XSLT
+
+```xml
+<?xml version="1.0"?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+ <xsl:template match="p">Hello XSLT</xsl:template>
+</xsl:stylesheet>
+=====true @a.xslt@=====
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="a.xslt"?>
+<p>this is replaced</p>
+=====xsltproc a.xslt @a.xml@=====
+```
+
 ### TODO
 
 Maybe support for the following languages can be added to the docker image:
@@ -336,7 +350,6 @@ Maybe support for the following languages can be added to the docker image:
 * Falcon
 * Smalltalk
 * Basic
-* XSLT
 * Scala
 
 ## Compiler command line
@@ -352,3 +365,10 @@ The compile line can have any (unix) command line, which is executed with the
 system's native shell. The plugin will look for a special filename placeholder.
 The filename must be enclosed in ampersand characters. The plugin will write
 the source code (pad text above the compiler line) to the specified file name.
+
+### writing multiple files
+
+Multiple compile lines can be present in the Etherpad text.
+Every time a compile line is found, the text preceeding the line will be
+written to a file and the command will be executed. Use a command which doesn't
+do anything like "true" to only write a file. See the XSLT example above.
