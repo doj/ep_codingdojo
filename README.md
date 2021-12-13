@@ -119,14 +119,16 @@ section .rodata
 =====nasm -f elf64 -o a.o @a.s@ && ld -o a.out a.o && ./a.out=====
 ```
 
-### Bourne shell
+### Bourne Again Shell
+
 ```sh
-echo "Hello Bourne Shell"
+echo "Hello Bourne Again Shell"
 
 =====bash @a.sh@=====
 ```
 
 ### C++
+
 ```c++
 #include <cstdio>
 int main() {
@@ -143,6 +145,14 @@ int main() {
 Console.WriteLine("Hello C#");
 
 =====csharp @a.cs@=====
+```
+
+### C Shell
+
+```csh
+echo Hello C Shell
+
+=====tcsh @c.sh@=====
 ```
 
 ### D
@@ -163,6 +173,7 @@ void main()
 program hello
   print *, 'Hello Fortran'
 end program hello
+
 =====gfortran @a.f90@ && ./a.out=====
 ```
 
@@ -245,6 +256,7 @@ Hello:
 
 World:
     @echo 'World'
+
 =====perl -i -pe 's/^\s{2,}/\t/' a.mak ; make -f @a.mak@=====
 ```
 
@@ -254,6 +266,26 @@ World:
 disp('Hello Matlab')
 
 =====octave @a.m@=====
+```
+
+### Objective C
+
+```objc
+#include <stdio.h>
+int main(void)
+{
+   printf("Hello World\n");
+}
+
+=====gcc -lang objc @a.m@ && ./a.out=====
+```
+
+### OCaml
+
+```ml
+print_string "Hello OCaml\n"
+
+=====ocaml @a.ml@=====
 ```
 
 ### Pascal
@@ -268,12 +300,25 @@ end.
 ```
 
 ### Perl
+
 ```perl
 use strict;
 print "Hello Perl\n";
 
 =====perl @a.pl@=====
 Hello World
+```
+
+### PHP
+
+```php
+<html>
+ <body>
+ <?php echo '<p>Hello World</p>'; ?>
+ </body>
+</html>
+
+=====php @a.php@=====
 ```
 
 ### Prolog
@@ -325,8 +370,17 @@ fn main() {
 create table t(a varchar(20));
 insert into t(a) values('Hello'),('SQL');
 select * from t;
+
 =====sqlite3 a.db < @a.sql@=====
 ```
+
+### TCL
+
+```tcl
+puts {Hello TCL}
+
+=====tclsh @a.tcl@=====
+````
 
 ### XSLT
 
@@ -340,6 +394,14 @@ select * from t;
 <?xml-stylesheet type="text/xsl" href="a.xslt"?>
 <p>this is replaced</p>
 =====xsltproc a.xslt @a.xml@=====
+```
+
+### Z Shell
+
+```zsh
+print Hello Z Shell
+
+=====zsh @z.sh@=====
 ```
 
 ### TODO

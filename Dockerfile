@@ -64,9 +64,9 @@ RUN export DEBIAN_FRONTEND=noninteractive; \
         perl python lua5.3 ruby \
 	r-base r-recommended groovy \
 	guile-3.0 swi-prolog fpc golang rustc \
-	clojure algol68g gfortran mono-csharp-shell gnat gdc \
-	make nasm build-essential g++ libboost-all-dev \
-	xsltproc sqlite3 octave \
+	clojure algol68g gfortran mono-csharp-shell gnat gdc ocaml php-cli tcl \
+	make nasm build-essential g++ gobjc gobjc++ libboost-all-dev \
+	xsltproc sqlite3 octave tcsh zsh \
         ${INSTALL_ABIWORD:+abiword} \
         ${INSTALL_SOFFICE:+libreoffice} \
         && \
