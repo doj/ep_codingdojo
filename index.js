@@ -95,6 +95,14 @@ exports.padUpdate = function (hookName, context, cb) {
 
 	// get the filename from the compile line
 	var cmd = matches[1];
+	if (cmd === 'showcols')
+	{
+	  old_res = '';
+	  new_res = new_res
+	    + '|0   |5   |10  |15  |20  |25  |30  |35  |40  |45  |50  |55  |60  |65  |70  |75  |80\n'
+	    + '+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----+----\n';
+	  continue;
+	}
 	matches = rgx_filename.exec(cmd);
 	if (matches === null)
 	{
@@ -121,7 +129,9 @@ exports.padUpdate = function (hookName, context, cb) {
 	//console.log('exec: ' + cmd);
 	// execute the command, capture STDOUT, convert \r\n to \n
 	try {
-	  new_res = new_res + cp.execSync(cmd, {"timeout":compilationTimeout_sec*1000, "cwd":dirname}).toString().replace(/\r\n/g, '\n');
+	  var env = process.env;
+	  env["TERM"] = 'xterm-color';
+	  new_res = new_res + cp.execSync(cmd, {"timeout":compilationTimeout_sec*1000, "cwd":dirname, "env":env}).toString().replace(/\r\n/g, '\n');
 	} catch (err) {
 	  new_res = new_res + 'Exception: could not execute: ' + cmd + ' : ' + err + '\n';
 	}

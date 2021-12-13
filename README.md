@@ -372,3 +372,12 @@ Multiple compile lines can be present in the Etherpad text.
 Every time a compile line is found, the text preceeding the line will be
 written to a file and the command will be executed. Use a command which doesn't
 do anything like "true" to only write a file. See the XSLT example above.
+
+### show column numbers
+
+If the compile command is 'showcols', a header with column numbers is added
+to the output text.
+
+```
+=====showcols=====
+```
