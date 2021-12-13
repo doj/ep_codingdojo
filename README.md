@@ -60,7 +60,7 @@ https://github.com/ether/etherpad-lite/blob/develop/doc/docker.md
 To run the docker container:
 
 ```sh
-docker run --publish 9001:9001 -e ADMIN_PASSWORD=admin $USER/etherpad
+docker run --publish 9001:9001 -e ADMIN_PASSWORD=admin -e PAD_OPTIONS_USE_MONOSPACE_FONT=true -e COMMIT_RATE_LIMIT_POINTS=20 $USER/etherpad
 ```
 
 And use the following URL http://localhost:9001
