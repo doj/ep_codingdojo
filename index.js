@@ -1,3 +1,17 @@
+//////////////////////////////////////////////////////////////////////////////
+// ep_codingdojo configuration
+
+/// number of seconds to wait until a compilation is started
+const inputDelay_sec = 3;
+
+/// number of seconds for timeout of a compilation command
+const compilationTimeout_sec = 30;
+
+/// number of seconds for timeout to clean up the temporary directory
+const cleanupTimeout_sec = 5;
+
+//////////////////////////////////////////////////////////////////////////////
+
 // import some other JavaScript code
 const Changeset = require('ep_etherpad-lite/static/js/Changeset');
 const padMessageHandler = require('ep_etherpad-lite/node/handler/PadMessageHandler');
@@ -100,21 +114,25 @@ exports.padUpdate = function (hookName, context, cb) {
 	old_res = '';
 
 	// construct the compile command
-	cmd = '(cd ' + dirname // change into the temporary directory
-	  + ' ; ' + cmd.replace(rgx_filename, filename) // the compile command from the Etherpad
+	cmd = '( ' + cmd.replace(rgx_filename, filename) // the compile command from the Etherpad
 	//+ ' ; mv -f * /tmp/' // only enable this line for debugging!
-	  + ') 2>&1 ' // redirect STDERR to STDOUT
+	  + ' ) 2>&1 ' // redirect STDERR to STDOUT
 	  + '|| true'; // force a success exit status code, to make Node.js execSync() happy
 	//console.log('exec: ' + cmd);
 	// execute the command, capture STDOUT, convert \r\n to \n
-	new_res = new_res + cp.execSync(cmd, {"timeout":60*1000}).toString().replace(/\r\n/g, '\n');
+	try {
+	  new_res = new_res + cp.execSync(cmd, {"timeout":compilationTimeout_sec*1000, "cwd":dirname}).toString().replace(/\r\n/g, '\n');
+	} catch (err) {
+	  new_res = new_res + 'Exception: could not execute: ' + cmd + ' : ' + err + '\n';
+	}
       } // for
 
       // remove temporary directory
-      var cmd = 'cd ' + tmpDir // change into the base temporary directory
-	  + ' ; rm -rf ' + dirname // remove our work temporary directory
-      ;
-      cp.execSync(cmd, {"timeout":5*1000});
+      try {
+	cp.execSync('rm -rf ' + dirname, {"timeout":cleanupTimeout_sec*1000, "cwd":tmpDir});
+      } catch (err) {
+	new_res = new_res + 'Exception: could not remove ' + dirname + ' : ' + err + '\n';
+      }
 
       // compare new and old result
       var old_res_trimmed = old_res.trim();
@@ -144,7 +162,7 @@ exports.padUpdate = function (hookName, context, cb) {
       return 3;
     }); // fs.mkdtemp()
   }, // setTimeout() callback
-  3*1000); // timeout interval, 3 seconds
+  inputDelay_sec*1000);
 
   return true;
 }

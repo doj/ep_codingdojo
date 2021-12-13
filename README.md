@@ -349,7 +349,7 @@ Maybe support for the following languages can be added to the docker image:
 * Erlang
 * Falcon
 * Smalltalk
-* Basic
+* Basic https://github.com/mist64/cbmbasic
 * Scala
 
 ## Compiler command line

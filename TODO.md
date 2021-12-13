@@ -1,1 +1,2 @@
 - make a video to show how this works, post on YouTube and link in README
+- interpret vtXX or ANSI escapes and set Etherpad attributes for colors
