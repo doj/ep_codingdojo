@@ -28,16 +28,14 @@ https://nodejs.org/dist/latest-v17.x/docs/api/documentation.html
 
 ## Development Install
 
-This etherpad plugin currently needs a patch of the upstream etherpad GIT repository.
+This etherpad plugin needs the current "develop" branch of the etherpad-lite source code.
 
 ```sh
 mkdir /opt/
 cd /opt/
 git clone https://github.com/doj/ep_codingdojo.git
-git clone https://github.com/doj/etherpad-lite.git
-cd etherpad-lite
-git checkout pad-splicetext
-cd ../ep_codingdojo
+git clone https://github.com/ether/etherpad-lite.git
+cd ep_codingdojo
 make run
 ```
 
@@ -46,9 +44,8 @@ make run
 The following instructions build a docker container:
 
 ```sh
-git clone https://github.com/doj/etherpad-lite.git
+git clone https://github.com/ether/etherpad-lite.git
 cd etherpad-lite
-git checkout pad-splicetext
 wget https://github.com/doj/ep_codingdojo/raw/main/Dockerfile
 # you may need to edit src/package-lock.json and change "lockfileVersion" to 2
 docker build --tag $USER/etherpad .
