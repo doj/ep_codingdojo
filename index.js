@@ -163,6 +163,10 @@ exports.padUpdate = function (hookName, context, cb) {
 
       // update the result on the pad text
       var removeLen = text.length - startIdx - 1;
+      if (removeLen < 0)
+      {
+	removeLen = 0;
+      }
       //console.log('text  ' + text.length.toString());
       //console.log('start ' + startIdx.toString());
       //console.log('remov ' + removeLen.toString());
